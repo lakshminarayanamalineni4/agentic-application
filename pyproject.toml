@@ -1,0 +1,27 @@
+[project]
+name = "agentic-application"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Soni008Akash", email = "akash1695s@gmail.com" }
+]
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "email-validator>=2.3.0",
+    "fastapi>=0.141.1",
+    "mcp[cli]>=2.3.0",
+    "openai>=3.19.2",
+    "psycopg2>=2.9.13",
+    "pydantic>=2.13.5",
+    "python-dotenv>=1.2.3",
+    "sqlalchemy>=2.0.54",
+    "uvicorn>=0.54.0",
+]
+
+[project.scripts]
+agentic-application = "agentic_application:main"
+
+[build-system]
+requires = ["uv_build>=0.12.5,<0.13.0"]
+build-backend = "uv_build"

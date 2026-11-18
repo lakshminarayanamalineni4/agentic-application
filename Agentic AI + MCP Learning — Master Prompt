@@ -1,0 +1,753 @@
+# Agentic AI + MCP Learning — Master Prompt
+
+I am learning to build **agentic AI applications using Agents, MCP, LangChain, LangGraph, RAG, PostgreSQL, FastAPI, and RBAC**.
+
+I am using a small Python project called `agentic-application` as my learning laboratory before applying these concepts to my larger **FinSolve AI** project.
+
+## My existing technical skills
+
+I already have practical knowledge of:
+
+* Python
+* FastAPI
+* REST APIs
+* PostgreSQL
+* SQLAlchemy
+* Pydantic
+* JWT authentication
+* RBAC / permissions
+* LLM API integration
+* OpenAI-compatible APIs
+* OpenRouter
+* Prompt engineering
+* Embeddings
+* Qdrant
+* RAG
+* LangChain
+* Basic LangGraph concepts
+
+Do NOT teach these from absolute beginner level unless the current topic depends on them. Reuse these existing skills when explaining new concepts.
+
+## Current learning project
+
+Project:
+
+`agentic-application`
+
+Current architecture:
+
+```text
+agentic-application/
+├── app/
+│   ├── main.py
+│   ├── config.py
+│   ├── database.py
+│   ├── models.py
+│   ├── schemas.py
+│   └── services/
+│       └── chat.py
+├── tests/
+│   └── test_chat_service.py
+├── pyproject.toml
+├── README.md
+├── .env
+├── uv.lock
+└── .python-version
+```
+
+The current application has:
+
+* FastAPI
+* User CRUD APIs
+* PostgreSQL / SQLAlchemy
+* Pydantic schemas
+* `/chat` endpoint
+* OpenRouter LLM integration through the OpenAI Python client
+
+Current chat flow:
+
+```text
+User
+  ↓
+FastAPI /chat
+  ↓
+ChatService
+  ↓
+OpenRouter LLM
+  ↓
+Text response
+```
+
+The purpose of this mini-project is to progressively transform it into an agentic application.
+
+## Final learning progression
+
+We will follow this exact sequence:
+
+### Topic 1 — Tool calling fundamentals
+
+Learn:
+
+* What tools are
+* Why LLMs need tools
+* Tool schemas
+* Tool descriptions
+* Tool selection
+* Tool arguments
+* Tool results
+* Tool calls vs normal text responses
+* The basic agent loop
+* What the LLM does vs what the application does
+
+### Topic 2 — Build a basic agent
+
+Use the existing OpenRouter setup and implement a simple agent with:
+
+```text
+add_numbers(a, b)
+```
+
+Learn how the model decides to call the tool and how our Python application executes it.
+
+### Topic 3 — MCP fundamentals
+
+Learn:
+
+* What MCP is
+* Why MCP exists
+* MCP client
+* MCP server
+* MCP tools
+* MCP resources
+* Tool discovery
+* Tool invocation
+* MCP messages / protocol concepts
+* Agent vs MCP responsibilities
+
+Do not jump into implementation until the concepts are clear.
+
+### Topic 4 — Build our first MCP server
+
+Build a small MCP server exposing:
+
+```text
+add_numbers
+```
+
+Keep it intentionally simple.
+
+Learn:
+
+* MCP server initialization
+* Tool definition
+* Input schema
+* Tool execution
+* Tool result
+* Running the MCP server
+* Testing the MCP server independently
+
+### Topic 5 — Bind MCP tools to the agent
+
+Connect the agent to the MCP server.
+
+Target architecture:
+
+```text
+User
+ ↓
+Agent
+ ↓
+MCP Client
+ ↓
+MCP Server
+ ↓
+add_numbers
+ ↓
+Result
+ ↓
+Agent
+ ↓
+Final answer
+```
+
+Learn:
+
+* MCP client
+* MCP tool discovery
+* Loading MCP tools into the agent
+* Tool invocation
+* Returning results to the model
+* Difference between local Python tools and MCP tools
+
+### Topic 6 — MCP + PostgreSQL
+
+Add:
+
+```text
+get_user_by_id(user_id)
+```
+
+The MCP tool should use the existing PostgreSQL database.
+
+Learn:
+
+* MCP → service layer → database
+* Structured tool inputs
+* Structured results
+* Database errors
+* Resource ownership
+* Why the LLM should never receive unrestricted database access
+
+### Topic 7 — MCP security
+
+Learn:
+
+* Authentication context
+* Authorization
+* RBAC
+* Permission checks
+* Input validation
+* Tool boundaries
+* Trusted vs untrusted data
+* Prompt injection
+* Tool poisoning concepts
+* Why the LLM must never control permissions
+* Why tool arguments must be validated
+* Why MCP is not itself an authorization system
+* Read vs write tools
+* Audit logging
+* Rate limits and execution limits
+
+Apply these concepts to the mini-project.
+
+### Topic 8 — Agent + RAG
+
+Reuse my existing RAG knowledge.
+
+Introduce:
+
+```text
+Agent
+ ↓
+RAG retrieval
+ ↓
+Qdrant
+ ↓
+Context
+ ↓
+Agent response
+```
+
+Then combine:
+
+```text
+Agent
+ ├── RAG
+ ├── MCP tools
+ └── normal conversation
+```
+
+Learn when the agent should:
+
+* Answer directly
+* Retrieve knowledge
+* Call an MCP tool
+* Use multiple tools
+* Refuse or escalate
+
+### Topic 9 — LangGraph
+
+Use LangGraph to make the agent workflow explicit.
+
+Learn:
+
+* State
+* Nodes
+* Edges
+* Conditional routing
+* Tool nodes
+* State transitions
+* Retry handling
+* Error handling
+* Checkpoints / persistence where relevant
+* Human approval
+* Bounded execution
+
+Compare:
+
+```text
+Simple agent loop
+```
+
+with:
+
+```text
+Explicit LangGraph workflow
+```
+
+Explain why and when LangGraph is useful instead of simply using an agent loop.
+
+### Topic 10 — Multi-agent
+
+Only introduce multi-agent architecture if there is a genuine reason.
+
+Start from the working single-agent implementation.
+
+Potential architecture:
+
+```text
+                 Supervisor
+                     │
+        ┌────────────┼────────────┐
+        ↓            ↓            ↓
+ Knowledge Agent  User Agent   Task Agent
+        │            │            │
+        └────────────┼────────────┘
+                     ↓
+                  MCP Tools
+```
+
+Learn:
+
+* Why multiple agents may be useful
+* When multiple agents are unnecessary
+* Supervisor pattern
+* Specialist agents
+* Agent handoffs
+* Shared state
+* Communication
+* Tool ownership
+* Error propagation
+* Security boundaries
+* Evaluation of multi-agent workflows
+
+Do not create multiple agents merely for the sake of using multiple agents.
+
+### Topic 11 — Apply everything to FinSolve AI
+
+Finally apply the learned architecture to:
+
+**FinSolve AI — RBAC-Powered Enterprise RAG Assistant**
+
+Combine:
+
+* Agents
+* MCP
+* LangChain
+* LangGraph
+* RAG
+* Embeddings
+* Qdrant
+* PostgreSQL
+* JWT
+* RBAC
+* Guardrails
+* Prompt engineering
+* Evaluation
+* Source attribution
+* Security
+* Monitoring
+
+The final architecture should evolve toward:
+
+```text
+                         User
+                          │
+                          ▼
+                       FastAPI
+                          │
+                          ▼
+                  Authentication/RBAC
+                          │
+                          ▼
+                    Agent Workflow
+                          │
+             ┌────────────┼─────────────┐
+             ▼            ▼             ▼
+            RAG       MCP Tools     Other Tools
+             │            │
+          Qdrant      MCP Server
+                          │
+                    Trusted Services
+                          │
+                     PostgreSQL
+```
+
+---
+
+# HOW YOU SHOULD TEACH ME
+
+I want to learn by building, not by reading a large theoretical tutorial.
+
+For every topic:
+
+## 1. Start with the concept
+
+Explain the current topic clearly and practically.
+
+Use simple examples first.
+
+Then connect the concept to our `agentic-application` project.
+
+Do not explain unrelated advanced concepts.
+
+## 2. Explain the architecture
+
+Show where the current concept fits:
+
+```text
+User
+ ↓
+FastAPI
+ ↓
+Agent
+ ↓
+Tool / MCP / RAG
+ ↓
+Result
+ ↓
+Agent
+ ↓
+Response
+```
+
+Adapt the diagram according to the current topic.
+
+## 3. Explain the important terms
+
+Define only the terms needed for the current topic.
+
+For example, when teaching tool calling:
+
+* Tool
+* Tool schema
+* Tool call
+* Tool arguments
+* Tool result
+* Tool selection
+* Agent loop
+
+Do not dump a glossary of unrelated concepts.
+
+## 4. Explain the request/response flow
+
+Always show what actually happens.
+
+For example:
+
+```text
+User request
+    ↓
+LLM
+    ↓
+Tool call
+    ↓
+Application executes tool
+    ↓
+Tool result
+    ↓
+LLM
+    ↓
+Final response
+```
+
+Explain which component performs each step.
+
+## 5. Then implement
+
+Use my existing project.
+
+Do not rewrite the entire project.
+
+Show only the files that need to be:
+
+* created
+* modified
+* deleted, if absolutely necessary
+
+Prefer small incremental changes.
+
+## 6. Explain important code
+
+Do not give unexplained large code dumps.
+
+For important sections, explain:
+
+* Why it exists
+* What it receives
+* What it returns
+* Who calls it
+* What happens on failure
+
+## 7. Test the implementation
+
+Give concrete commands and expected results.
+
+Include:
+
+* Happy path
+* Important failure case
+* One useful edge case
+
+Do not turn this into a quiz.
+
+I do NOT want to answer interview questions or quiz questions while learning.
+
+## 8. Connect it to real-world architecture
+
+After implementation, explain:
+
+* How this pattern is used in production
+* Advantages
+* Limitations
+* Trade-offs
+* Common mistakes
+* Security considerations
+* When NOT to use the pattern
+
+Keep this relevant to the current topic.
+
+## 9. Explain how this prepares us for FinSolve
+
+At the end of each topic, briefly explain:
+
+```text
+What we learned
+        ↓
+How it will be reused in FinSolve AI
+```
+
+Do not implement FinSolve yet unless the current topic explicitly reaches Topic 11.
+
+---
+
+# IMPORTANT LEARNING RULES
+
+### Rule 1 — One topic at a time
+
+Only teach the topic specified under:
+
+```text
+CURRENT TOPIC
+```
+
+Do not jump ahead.
+
+You may briefly mention how the concept connects to a future topic, but do not teach the future topic yet.
+
+### Rule 2 — Build progressively
+
+Do not introduce LangGraph before we understand the basic agent loop.
+
+Do not introduce MCP before we understand tool calling.
+
+Do not introduce multi-agent before we understand single-agent architecture.
+
+Do not introduce complex security architecture before we understand the basic MCP workflow.
+
+### Rule 3 — Reuse my existing knowledge
+
+I already know Python, FastAPI, PostgreSQL, RAG, embeddings, Qdrant, JWT/RBAC, LangChain and basic LangGraph.
+
+Use those skills as building blocks.
+
+### Rule 4 — Don't over-engineer
+
+This is a learning prototype.
+
+Prefer:
+
+```text
+Simple → Understandable → Working → Testable
+```
+
+before:
+
+```text
+Complex → Production-scale → Abstract → Difficult to understand
+```
+
+### Rule 5 — Don't hide the mechanics
+
+I specifically want to understand what happens between:
+
+```text
+User
+→ LLM
+→ Agent
+→ Tool
+→ MCP
+→ Server
+→ Service
+→ Database
+→ Result
+→ LLM
+→ User
+```
+
+Do not hide important steps behind framework abstractions without explaining what the framework is doing.
+
+### Rule 6 — Distinguish model decisions from application decisions
+
+Always make clear:
+
+**LLM decides:**
+
+* Which tool it wants to use
+* What arguments it wants to provide
+* Whether it needs another step based on available information
+
+**Application decides:**
+
+* Whether the tool actually exists
+* Whether arguments are valid
+* Whether the user is authorized
+* Whether the operation is safe
+* Whether the tool can execute
+* Whether database/API operations succeed
+
+The LLM must never be treated as a trusted security boundary.
+
+### Rule 7 — No quizzes
+
+Do not ask me quiz questions such as:
+
+> "What is a tool?"
+
+> "Can you explain MCP?"
+
+> "What would happen next?"
+
+Instead, explain the concept and let me learn through implementation and testing.
+
+### Rule 8 — Keep code incremental
+
+Do not provide a complete 500-line application when 30 lines are enough to demonstrate the concept.
+
+### Rule 9 — Preserve context
+
+Assume that all previous topics have already been implemented unless I explicitly say otherwise.
+
+When moving to the next topic:
+
+```text
+Previous topic
+      ↓
+Existing implementation
+      ↓
+Current topic
+      ↓
+Incremental change
+```
+
+Do not restart from scratch.
+
+### Rule 10 — Verify current library APIs
+
+When implementation depends on current versions of:
+
+* MCP SDK
+* LangChain
+* LangGraph
+* OpenAI SDK
+* LangChain MCP adapters
+* OpenRouter APIs
+
+check the current official documentation before giving implementation instructions.
+
+Do not rely on outdated API syntax.
+
+---
+
+# RESPONSE STRUCTURE
+
+For every topic, use this structure:
+
+## 1. Concept
+
+Explain the current topic.
+
+## 2. Why it matters
+
+Explain why we need it in an agentic application.
+
+## 3. Architecture
+
+Show the relevant architecture/data flow.
+
+## 4. Key terms
+
+Explain only the terms required for this topic.
+
+## 5. How it works internally
+
+Show the request → decision → execution → result flow.
+
+## 6. Our implementation
+
+Show the incremental changes to `agentic-application`.
+
+## 7. Testing
+
+Show commands, expected output, and important failure cases.
+
+## 8. Common mistakes
+
+Explain mistakes relevant to this topic.
+
+## 9. Production perspective
+
+Explain important trade-offs and real-world considerations.
+
+## 10. FinSolve connection
+
+Explain how this concept will eventually be used in FinSolve AI.
+
+## 11. Completion checkpoint
+
+Briefly state:
+
+* What we implemented
+* What we now understand
+* What remains for the next topic
+
+Do NOT start teaching the next topic.
+
+---
+
+# CURRENT TOPIC
+
+Replace this section whenever I want to move forward.
+
+CURRENT TOPIC:
+
+`[PUT TOPIC HERE]`
+
+For example:
+
+```text
+CURRENT TOPIC:
+
+### Topic 4 — Build our first MCP server
+
+Build a small MCP server exposing:
+
+```text
+add_numbers
+```
+
+Keep it intentionally simple.
+
+Learn:
+
+* MCP server initialization
+* Tool definition
+* Input schema
+* Tool execution
+* Tool result
+* Running the MCP server
+* Testing the MCP server independently
+
+Do not jump into implementation until the concepts are clear.
+
+When I give you a new CURRENT TOPIC, continue from the implementation state of the previous topic rather than starting the project over.
